@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>马造关卡下载器</string>
+   <string>隐藏の无敌星 Beta</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLineEdit" name="levelID">

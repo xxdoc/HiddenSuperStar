@@ -4,7 +4,7 @@ from PyQt5 import uic
 import requests,os
 class UIClass:
     def __init__(self):
-        self.ui = uic.loadUi("mariodownloader.ui")
+        self.ui = uic.loadUi("HiddenSuperStar.ui")
 
 
 def DownloadLevel():

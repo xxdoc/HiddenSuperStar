@@ -1,5 +1,7 @@
 # Hidden Super Star
-隐藏无敌星，马造2关卡下载器，用于给 Yuzu / Ryujinx 模拟器下载全球关卡
+隐藏无敌星，马造2关卡下载器，用于给 Yuzu / Ryujinx 模拟器下载全球关卡。
+
+Windows 版使用 VB6 编写，Linux 版使用 Python 编写。
 
 基于 https://github.com/JiXiaomai/SMM2LevelViewer
 
