@@ -147,7 +147,7 @@ Private Sub Form_Initialize()
     'TGRCODE_API = "https://tgrcode.com"
     TGRCODE_API = GetIni("HiddenSuperStar", "ServerURL", App.Path & "\Config.ini")
     'ShellAndWait "cmd /c rd /s /q " & Chr(34) & Environ("Temp") & "\HSSTemp" & Chr(34)
-    'MkDir Environ("Temp") & "\HSSTemp"
+    If Dir(Environ("Temp") & "\HSSTemp", vbDirectory) = "" Then MkDir Environ("Temp") & "\HSSTemp"
     '检查完整性
     Dim CheckIntegrity As Boolean
     CheckIntegrity = False
