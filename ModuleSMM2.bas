@@ -30,8 +30,9 @@ Public Function GetCourseMeta(CoursePath As String) As String()
         strMD5 = LCase(.HashBytes(StrConv(CoursePath, vbFromUnicode)))
     End With
     If CheckFileExists(Environ("Temp") & "\HSSTemp\" & strMD5 & ".json") = False Then
-        ShellAndWait Chr(34) & App.Path & "\toost\bin\toost.exe" & Chr(34) & " --overworldJson " & Chr(34) & Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json" & Chr(34) & " -p " & Chr(34) & CoursePath & Chr(34)
-        ShellAndWait App.Path & "\iconv_wrapper.bat " & strMD5
+        Debug.Print """" & App.Path & "\toost\bin\toost.exe" & """ --overworldJson """ & Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json" & """ -p """ & CoursePath & """"
+        ShellAndWait """" & App.Path & "\toost\bin\toost.exe" & """ --overworldJson """ & Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json" & """ -p """ & CoursePath & """"
+        ShellAndWait """" & App.Path & "\iconv_wrapper.bat"" " & strMD5
         Kill Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json"
     End If
     arrJSON = Split(Left(ReadTextFile(Environ("Temp") & "\HSSTemp\" & strMD5 & ".json"), 1000), ",")
@@ -87,13 +88,13 @@ Public Function PrettyID(ID As String) As String
     PrettyID = Left(ID, 3) & "-" & Right(Left(ID, 6), 3) & "-" & Right(ID, 3)
 End Function
 Private Function GetFirstObject(JSONArray As Variant, ObjToGet As String, CoursePath As String) As String
-On Error GoTo ErrHandler
+On Error GoTo errHandler
     GetFirstObject = Replace(Split(Replace(Replace(Filter(JSONArray, Chr(34) & ObjToGet & Chr(34))(0), "{", ""), "}", ""), ":")(1), Chr(34), "")
     Debug.Print GetFirstObject
     Exit Function
-ErrHandler:
+errHandler:
     Kill CoursePath
-    MsgBox "存档里含有已损坏的关卡数据 " & CoursePath & " ，已删除。" & vbCrLf & "请重新打开本程序。", vbCritical
+    MsgBox "存档里含有已损坏或过大的关卡数据 " & CoursePath & " ，已删除。" & vbCrLf & "请重新打开本程序。", vbCritical
     End
 End Function
 Public Function PrettyTag(TagID As Integer) As String
