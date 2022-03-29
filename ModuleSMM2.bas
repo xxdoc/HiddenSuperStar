@@ -15,6 +15,7 @@ Attribute TGRCODE_API.VB_VarUserMemId = 1073741827
 
 '函数
 Public Function GetCourseMeta(CoursePath As String) As String()
+On Error GoTo errHandler
     If CheckFileExists(CoursePath) = False Then Exit Function
     '0=关卡名
     '1=简介
@@ -29,13 +30,12 @@ Public Function GetCourseMeta(CoursePath As String) As String()
     With New MD5Hash
         strMD5 = LCase(.HashBytes(StrConv(CoursePath, vbFromUnicode)))
     End With
-    If CheckFileExists(Environ("Temp") & "\HSSTemp\" & strMD5 & ".json") = False Then
-        Debug.Print """" & App.Path & "\toost\bin\toost.exe" & """ --overworldJson """ & Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json" & """ -p """ & CoursePath & """"
-        ShellAndWait """" & App.Path & "\toost\bin\toost.exe" & """ --overworldJson """ & Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json" & """ -p """ & CoursePath & """"
-        ShellAndWait """" & App.Path & "\iconv_wrapper.bat"" " & strMD5
-        Kill Environ("Temp") & "\HSSTemp\" & strMD5 & "_orig.json"
+    If CheckFileExists(EnvTempDir & "\HSSTemp\" & strMD5 & ".json") = False Then
+        ShellAndWait """" & App.Path & "\toost\bin\toost.exe" & """ --overworldJson """ & EnvTempDir & "\HSSTemp\" & strMD5 & "_orig.json" & """ -p """ & CoursePath & """"
+        ShellAndWait """" & App.Path & "\" & IconvWrapperFilename & ".bat"" " & strMD5
+        Kill EnvTempDir & "\HSSTemp\" & strMD5 & "_orig.json"
     End If
-    arrJSON = Split(Left(ReadTextFile(Environ("Temp") & "\HSSTemp\" & strMD5 & ".json"), 1000), ",")
+    arrJSON = Split(Left(ReadTextFile(EnvTempDir & "\HSSTemp\" & strMD5 & ".json"), 1000), ",")
     CourseMeta(0) = GetFirstObject(arrJSON, "name", CoursePath)
     CourseMeta(1) = GetFirstObject(arrJSON, "description", CoursePath)
     CourseMeta(2) = GetFirstObject(arrJSON, "gamestyle", CoursePath)
@@ -56,6 +56,14 @@ Public Function GetCourseMeta(CoursePath As String) As String()
     CourseMeta(7) = GetFirstObject(arrJSON, "autoscroll_type", CoursePath) & " " & GetFirstObject(arrJSON, "autoscroll_speed", CoursePath)
     CourseMeta(8) = GetFirstObject(arrJSON, "liquid_speed", CoursePath)
     GetCourseMeta = CourseMeta
+    Exit Function
+errHandler:
+    If Err.Number = "53" Then
+        MsgBox "无法向 Temp 文件夹中写入数据，请使用 HiddenSuperStarPortable.bat 来启动本工具。"
+    Else
+        MsgBox "运行时错误 " & Err.Number & vbCrLf & Err.Description
+    End If
+    End
 End Function
 
 Public Function ConvertLevelTheme(InputStr As String) As String
@@ -93,7 +101,7 @@ On Error GoTo errHandler
     Debug.Print GetFirstObject
     Exit Function
 errHandler:
-    Kill CoursePath
+    'Kill CoursePath
     MsgBox "存档里含有已损坏或过大的关卡数据 " & CoursePath & " ，已删除。" & vbCrLf & "请重新打开本程序。", vbCritical
     End
 End Function

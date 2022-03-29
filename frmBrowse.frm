@@ -337,6 +337,13 @@ Private Sub cmdMakerInfo_Click()
     Next Course
 End Sub
 
+Private Sub Form_Initialize()
+If IsWine Then
+VB6Resizer1.Enabled = False
+VB6Resizer1.Mode = vrManualInit
+End If
+End Sub
+
 Private Sub Form_Load()
     On Error Resume Next
     LoadCompleted = False
@@ -397,7 +404,7 @@ End Sub
 
 
 Private Sub lst_Click()
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     Dim Course As Variant
     '加载关卡细节
     '获取这个关卡
@@ -434,7 +441,7 @@ Private Sub lst_Click()
         End If
     End If
     Exit Sub
-ErrHandler:
+errHandler:
     Exit Sub
 End Sub
 
@@ -508,7 +515,7 @@ Private Sub cmdDownload_Click()
             Sleep 20
             Name SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag & "_progress" As SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag
             With New MD5Hash
-                Kill Environ("Temp") & "\HSSTemp\" & LCase(.HashBytes(StrConv(SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag, vbFromUnicode))) & ".json"
+                Kill EnvTempDir & "\HSSTemp\" & LCase(.HashBytes(StrConv(SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag, vbFromUnicode))) & ".json"
             End With
             frmDummy.Hide
             MsgBox "下载完成！", vbInformation
@@ -533,7 +540,7 @@ Private Sub cmdDownloadNinji_Click()
             Sleep 20
             Name SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag & "_progress" As SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag
             With New MD5Hash
-                Kill Environ("Temp") & "\HSSTemp\" & LCase(.HashBytes(StrConv(SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag, vbFromUnicode))) & ".json"
+                Kill EnvTempDir & "\HSSTemp\" & LCase(.HashBytes(StrConv(SavePath & "\" & frmMain.lstLocal.SelectedItem.Tag, vbFromUnicode))) & ".json"
             End With
             frmDummy.Hide
             MsgBox "下载完成！", vbInformation

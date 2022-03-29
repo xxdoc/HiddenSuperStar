@@ -131,23 +131,40 @@ frmSettings.Show
 End Sub
 
 Private Sub cmdShowPicture_Click()
-    ShellAndWait Chr(34) & App.Path & "\toost\bin\toost.exe" & Chr(34) & " -o " & Chr(34) & Environ("Temp") & "\HSSTemp\表世界.png" & Chr(34) & " -s " & Chr(34) & Environ("Temp") & "\HSSTemp\里世界.png" & Chr(34) & " -p " & Chr(34) & SavePath & "\" & lstLocal.SelectedItem.Tag & Chr(34)
-    Shell "cmd /c start " & Chr(34) & Chr(34) & " " & Chr(34) & Environ("Temp") & "\HSSTemp\表世界.png" & Chr(34)
-    Shell "cmd /c start " & Chr(34) & Chr(34) & " " & Chr(34) & Environ("Temp") & "\HSSTemp\里世界.png" & Chr(34)
+    ShellAndWait Chr(34) & App.Path & "\toost\bin\toost.exe" & Chr(34) & " -o " & Chr(34) & EnvTempDir & "\HSSTemp\表世界.png" & Chr(34) & " -s " & Chr(34) & EnvTempDir & "\HSSTemp\里世界.png" & Chr(34) & " -p " & Chr(34) & SavePath & "\" & lstLocal.SelectedItem.Tag & Chr(34)
+    Shell "cmd /c start " & Chr(34) & Chr(34) & " " & Chr(34) & EnvTempDir & "\HSSTemp\表世界.png" & Chr(34)
+    Shell "cmd /c start " & Chr(34) & Chr(34) & " " & Chr(34) & EnvTempDir & "\HSSTemp\里世界.png" & Chr(34)
 End Sub
 
 Private Sub Form_Activate()
 On Error Resume Next
+If IsWine Then
+VB6Resizer1.Enabled = False
+VB6Resizer1.Mode = vrManualInit
+End If
 cmdBrowse.SetFocus
 End Sub
 
 Private Sub Form_Initialize()
+    If Command = "--portable" Then
+        EnvTempDir = App.Path
+        IconvWrapperFilename = "iconv_wrapper_portable"
+        IsWine = False
+    ElseIf Command = "--portable --wine" Or Command = "--wine --portable" Then
+        EnvTempDir = App.Path
+        IconvWrapperFilename = "iconv_wrapper_portable"
+        IsWine = True
+    Else
+        EnvTempDir = Environ("Temp")
+        IconvWrapperFilename = "iconv_wrapper"
+        IsWine = False
+    End If
     InitCommonControls
     '加载
     'TGRCODE_API = "https://tgrcode.com"
     TGRCODE_API = GetIni("HiddenSuperStar", "ServerURL", App.Path & "\Config.ini")
-    'ShellAndWait "cmd /c rd /s /q " & Chr(34) & Environ("Temp") & "\HSSTemp" & Chr(34)
-    If Dir(Environ("Temp") & "\HSSTemp", vbDirectory) = "" Then MkDir Environ("Temp") & "\HSSTemp"
+    'ShellAndWait "cmd /c rd /s /q " & Chr(34) & EnvTempDir & "\HSSTemp" & Chr(34)
+    If Dir(EnvTempDir & "\HSSTemp", vbDirectory) = "" Then MkDir EnvTempDir & "\HSSTemp"
     '检查完整性
     Dim CheckIntegrity As Boolean
     CheckIntegrity = False
@@ -196,6 +213,10 @@ Private Sub Form_Load()
     LoadLocalLevels
 End Sub
 
+Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
+End
+End Sub
+
 Private Sub Form_Unload(Cancel As Integer)
     End
 End Sub
@@ -236,6 +257,7 @@ Private Sub txtCourseID_KeyPress(KeyAscii As Integer)
 End Sub
 
 Public Sub LoadLocalLevels()
+On Error GoTo LocalErrhandler
     Dim CourseList() As String, CourseMetadata() As String
     LoadCompletedM = False
     frmDummy.ProcessWindow
@@ -265,6 +287,10 @@ Public Sub LoadLocalLevels()
     frmDummy.Hide
     Unload frmDummy
     LoadCompletedM = True
+    Exit Sub
+LocalErrhandler:
+    MsgBox "未找到关卡！" & vbCrLf & "请至少创建一个关卡后再试。", vbCritical
+    End
 End Sub
 
 Private Sub VB6Resizer1_AfterResize()

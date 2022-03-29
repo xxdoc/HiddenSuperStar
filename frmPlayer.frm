@@ -142,7 +142,6 @@ End Sub
 Private Sub Form_Load()
     Me.Caption = "隐藏の无敌星 " & App.Major & "." & App.Minor & "." & App.Revision & " - 玩家信息"
 End Sub
-
 Public Sub PlayerInfo(Player As Variant)
 '显示玩家信息
     Dim stdpic As New stdPicEx2, SingleBadge As Variant
@@ -191,8 +190,8 @@ Public Sub PlayerInfo(Player As Variant)
     WorldID = CStr(Player("super_world_id"))
     Me.Show
     DoEvents
-    Call URLDownloadToFile(0, Player("mii_image"), Environ("Temp") & "\HSSTemp\Mii.png", 0, 0)
-    Image1.Picture = stdpic.LoadPictureEx(Environ("Temp") & "\HSSTemp\Mii.png")
+    Call URLDownloadToFile(0, Player("mii_image"), EnvTempDir & "\HSSTemp\Mii.png", 0, 0)
+    Image1.Picture = stdpic.LoadPictureEx(EnvTempDir & "\HSSTemp\Mii.png")
 
 End Sub
 

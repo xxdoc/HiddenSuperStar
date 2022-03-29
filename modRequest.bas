@@ -17,7 +17,7 @@ Public Function xhrGet(url As String) As String
     Set xhr = CreateObject("MSXML2.ServerXMLHTTP.6.0")
     xhr.Open "GET", url, True
     xhr.send
-    xhr.waitForResponse 60
+    xhr.waitForResponse 120
     If xhr.Status = 200 Then
         xhrGet = xhr.responseText
     ElseIf xhr.Status = 400 Then

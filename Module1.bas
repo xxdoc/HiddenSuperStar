@@ -3,6 +3,8 @@ Public Declare Function SysReAllocString Lib "oleaut32.dll" (ByVal pBSTR As Long
 Public Declare Sub CoTaskMemFree Lib "ole32.dll" (ByVal pv As Long)
 Public Declare Sub InitCommonControls Lib "comctl32.dll" ()
 
+Public EnvTempDir As String, IconvWrapperFilename As String, IsWine As Boolean
+
 
 Public Function CheckFileExists(FilePath As String) As Boolean
 '检查文件是否存在

@@ -74,8 +74,8 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Private Sub cmdClearCache_Click()
-ShellAndWait "cmd /c del /s /q ""%TEMP%\HSSTemp\*.json"""
-    Label2.Caption = "缓存大小: " & GetFolderSize(Environ("Temp") & "\HSSTemp") & "MB"
+ShellAndWait "cmd /c del /s /q """ & EnvTempDir & "\HSSTemp\*.json"""
+    Label2.Caption = "缓存大小: " & GetFolderSize(EnvTempDir & "\HSSTemp") & "MB"
 End Sub
 
 Private Sub cmdSave_Click()
@@ -90,9 +90,9 @@ Private Sub Form_Load()
     Me.Show
     DoEvents
     Text1.text = TGRCODE_API
-    Label2.Caption = "缓存大小: " & GetFolderSize(Environ("Temp") & "\HSSTemp") & "MB"
+    Label2.Caption = "缓存大小: " & GetFolderSize(EnvTempDir & "\HSSTemp") & "MB"
     DoEvents
-    'MsgBox GetFolderSize(Environ("Temp") & "\HSSTemp")
+    'MsgBox GetFolderSize(EnvTempDir & "\HSSTemp")
 End Sub
 
 Private Function GetFolderSize(FolderPath As String) As String
